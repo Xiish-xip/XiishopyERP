@@ -21,12 +21,14 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -36,6 +38,47 @@ class _LoginScreenState extends State<LoginScreen> {
       SignInRequested(
         email: _emailController.text.trim(),
         password: _passwordController.text,
+      ),
+    );
+  }
+
+  void _onPhoneSignIn() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF16213E),
+        title: Text('Phone Sign In', style: GoogleFonts.poppins(color: Colors.white)),
+        content: TextField(
+          controller: _phoneController,
+          keyboardType: TextInputType.phone,
+          decoration: InputDecoration(
+            hintText: '+255 712 345 678',
+            hintStyle: TextStyle(color: Colors.grey[600]),
+            filled: true,
+            fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
+            ),
+          ),
+          style: const TextStyle(color: Colors.white),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Cancel', style: GoogleFonts.poppins(color: Colors.white54)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              context.read<AuthBloc>().add(
+                PhoneSignInRequested(phoneNumber: _phoneController.text.trim()),
+              );
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0F3460)),
+            child: Text('Send Code', style: GoogleFonts.poppins(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }
@@ -235,7 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: double.infinity,
                           height: 50,
                           child: OutlinedButton.icon(
-                            onPressed: () {},
+                            onPressed: _onPhoneSignIn,
                             icon: const Icon(Icons.phone_android, color: Colors.white),
                             label: Text(
                               'Sign in with Phone',

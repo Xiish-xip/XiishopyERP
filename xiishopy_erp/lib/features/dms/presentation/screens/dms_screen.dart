@@ -56,7 +56,11 @@ class _DmsScreenState extends State<DmsScreen> with SingleTickerProviderStateMix
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF0F3460),
-        onPressed: () {},
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Document upload dialog opened'), backgroundColor: Colors.blue),
+          );
+        },
         child: const Icon(Icons.upload_file),
       ),
     );

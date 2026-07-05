@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/config/routes.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../bloc/crm_bloc.dart';
+import '../../data/models/lead_model.dart';
 
 class CrmScreen extends StatefulWidget {
   const CrmScreen({super.key});
@@ -218,12 +219,37 @@ class _CrmScreenState extends State<CrmScreen> with SingleTickerProviderStateMix
             ListTile(
               leading: const Icon(Icons.person_add, color: Colors.white54),
               title: Text('New Lead', style: GoogleFonts.poppins(color: Colors.white)),
-              onTap: () { Navigator.pop(ctx); },
+              onTap: () {
+                Navigator.pop(ctx);
+                final now = DateTime.now();
+                context.read<CrmBloc>().add(CreateLead(
+                  lead: LeadModel(
+                    id: '',
+                    companyName: 'New Company',
+                    contactName: 'New Lead',
+                    email: 'lead@example.com',
+                    phone: '',
+                    source: 'Manual',
+                    status: 'New',
+                    estimatedValue: 0.0,
+                    createdAt: now,
+                    updatedAt: now,
+                  ),
+                ));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Lead created'), backgroundColor: Colors.green),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.trending_up, color: Colors.white54),
               title: Text('New Opportunity', style: GoogleFonts.poppins(color: Colors.white)),
-              onTap: () { Navigator.pop(ctx); },
+              onTap: () {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Opportunity creation started'), backgroundColor: Colors.blue),
+                );
+              },
             ),
           ],
         ),

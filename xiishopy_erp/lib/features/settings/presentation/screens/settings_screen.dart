@@ -266,7 +266,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const SizedBox(width: 16),
               TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Logo upload dialog opened'), backgroundColor: Colors.blue),
+                  );
+                },
                 icon: const Icon(Icons.upload),
                 label: const Text('Upload Logo'),
                 style: TextButton.styleFrom(foregroundColor: Colors.white54),

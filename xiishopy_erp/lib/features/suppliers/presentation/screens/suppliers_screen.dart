@@ -21,8 +21,36 @@ class SuppliersScreen extends StatelessWidget {
         title: Text('Supplier Management',
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         actions: [
-          IconButton(icon: const Icon(Icons.add), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: const Color(0xFF16213E),
+                  title: Text('Add Supplier', style: GoogleFonts.poppins(color: Colors.white)),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(decoration: InputDecoration(labelText: 'Supplier Name', labelStyle: GoogleFonts.poppins(color: Colors.white54), filled: true, fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3), border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none)), style: GoogleFonts.poppins(color: Colors.white)),
+                      const SizedBox(height: 12),
+                      TextField(decoration: InputDecoration(labelText: 'Contact', labelStyle: GoogleFonts.poppins(color: Colors.white54), filled: true, fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3), border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none)), style: GoogleFonts.poppins(color: Colors.white)),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx), child: Text('Cancel', style: GoogleFonts.poppins(color: Colors.white54))),
+                    ElevatedButton(onPressed: () { Navigator.pop(ctx); ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Supplier added'), backgroundColor: Colors.green)); }, style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0F3460)), child: Text('Add', style: GoogleFonts.poppins(color: Colors.white))),
+                  ],
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: _SupplierSearchDelegate());
+            },
+          ),
         ],
       ),
       body: ListView.builder(
@@ -44,7 +72,6 @@ class SuppliersScreen extends StatelessWidget {
             );
           }
           final s = suppliers[index - 1];
-          final rating = double.tryParse(s['rating']!) ?? 0;
           return Container(
             margin: const EdgeInsets.only(bottom: 8),
             padding: const EdgeInsets.all(16),
@@ -68,8 +95,7 @@ class SuppliersScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(s['name']!,
-                          style: GoogleFonts.poppins(
-                              fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
+                          style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
                       Text('${s['contact']} • ${s['category']}',
                           style: GoogleFonts.poppins(fontSize: 12, color: Colors.white54)),
                     ],
@@ -80,8 +106,7 @@ class SuppliersScreen extends StatelessWidget {
                     Icon(Icons.star, size: 16, color: Colors.amber),
                     const SizedBox(width: 4),
                     Text(s['rating']!,
-                        style: GoogleFonts.poppins(
-                            fontSize: 13, fontWeight: FontWeight.w600, color: Colors.amber)),
+                        style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.amber)),
                   ],
                 ),
               ],
@@ -105,10 +130,32 @@ class SuppliersScreen extends StatelessWidget {
           Text('$label: ',
               style: GoogleFonts.poppins(fontSize: 12, color: Colors.white54)),
           Text(value,
-              style: GoogleFonts.poppins(
-                  fontSize: 12, fontWeight: FontWeight.bold, color: color)),
+              style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.bold, color: color)),
         ],
       ),
     );
   }
+}
+
+class _SupplierSearchDelegate extends SearchDelegate<String?> {
+  @override
+  List<Widget>? buildActions(BuildContext context) => [
+    IconButton(icon: const Icon(Icons.clear), onPressed: () => query = ''),
+  ];
+
+  @override
+  Widget? buildLeading(BuildContext context) => IconButton(
+    icon: const Icon(Icons.arrow_back),
+    onPressed: () => close(context, null),
+  );
+
+  @override
+  Widget buildResults(BuildContext context) => Center(
+    child: Text('Search results for: $query', style: GoogleFonts.poppins(color: Colors.white)),
+  );
+
+  @override
+  Widget buildSuggestions(BuildContext context) => Center(
+    child: Text('Type to search suppliers', style: GoogleFonts.poppins(color: Colors.white54)),
+  );
 }

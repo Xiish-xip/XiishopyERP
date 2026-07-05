@@ -138,7 +138,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           ),
                           const SizedBox(height: 24),
                           ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invoice generated successfully'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            },
                             icon: const Icon(Icons.receipt_long),
                             label: Text('Generate Invoice',
                                 style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),

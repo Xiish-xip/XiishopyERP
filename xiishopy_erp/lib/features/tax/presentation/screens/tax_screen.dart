@@ -56,7 +56,27 @@ class _TaxScreenState extends State<TaxScreen> with SingleTickerProviderStateMix
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF0F3460),
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              backgroundColor: const Color(0xFF16213E),
+              title: Text('Add Tax Config', style: GoogleFonts.poppins(color: Colors.white)),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(decoration: InputDecoration(labelText: 'Tax Name', labelStyle: GoogleFonts.poppins(color: Colors.white54), filled: true, fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3), border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none)), style: GoogleFonts.poppins(color: Colors.white)),
+                  const SizedBox(height: 12),
+                  TextField(decoration: InputDecoration(labelText: 'Rate (%)', labelStyle: GoogleFonts.poppins(color: Colors.white54), filled: true, fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3), border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none)), style: GoogleFonts.poppins(color: Colors.white)),
+                ],
+              ),
+              actions: [
+                TextButton(onPressed: () => Navigator.pop(ctx), child: Text('Cancel', style: GoogleFonts.poppins(color: Colors.white54))),
+                ElevatedButton(onPressed: () { Navigator.pop(ctx); ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Tax config added'), backgroundColor: Colors.green)); }, style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0F3460)), child: Text('Add', style: GoogleFonts.poppins(color: Colors.white))),
+              ],
+            ),
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );

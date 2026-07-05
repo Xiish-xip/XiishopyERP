@@ -21,8 +21,79 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         title: Text('Expense Tracking',
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         actions: [
-          IconButton(icon: const Icon(Icons.add), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.filter_list), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: const Color(0xFF16213E),
+                  title: Text('Add Expense', style: GoogleFonts.poppins(color: Colors.white)),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildDialogField('Description'),
+                      const SizedBox(height: 12),
+                      _buildDialogField('Amount'),
+                      const SizedBox(height: 12),
+                      _buildDialogField('Category'),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: Text('Cancel', style: GoogleFonts.poppins(color: Colors.white54)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Expense submitted'), backgroundColor: Colors.green),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0F3460)),
+                      child: Text('Submit', style: GoogleFonts.poppins(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                backgroundColor: const Color(0xFF16213E),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                builder: (ctx) => Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Filter Expenses', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white)),
+                      const SizedBox(height: 16),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: _categories.map((c) => ActionChip(
+                          label: Text(c, style: GoogleFonts.poppins(color: Colors.white)),
+                          backgroundColor: const Color(0xFF0F3460),
+                          onPressed: () {
+                            setState(() => _selectedCategory = _categories.indexOf(c));
+                            Navigator.pop(ctx);
+                          },
+                        )).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
       body: Column(
@@ -92,6 +163,22 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDialogField(String label) {
+    return TextField(
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: GoogleFonts.poppins(color: Colors.white54),
+        filled: true,
+        fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+      ),
+      style: GoogleFonts.poppins(color: Colors.white),
     );
   }
 

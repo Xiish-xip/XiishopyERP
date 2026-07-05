@@ -56,7 +56,27 @@ class _ManufacturingScreenState extends State<ManufacturingScreen> with SingleTi
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFF0F3460),
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              backgroundColor: const Color(0xFF16213E),
+              title: Text('Create BOM', style: GoogleFonts.poppins(color: Colors.white)),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(decoration: InputDecoration(labelText: 'Product Name', labelStyle: GoogleFonts.poppins(color: Colors.white54), filled: true, fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3), border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none)), style: GoogleFonts.poppins(color: Colors.white)),
+                  const SizedBox(height: 12),
+                  TextField(decoration: InputDecoration(labelText: 'Components (comma separated)', labelStyle: GoogleFonts.poppins(color: Colors.white54), filled: true, fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3), border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none)), style: GoogleFonts.poppins(color: Colors.white)),
+                ],
+              ),
+              actions: [
+                TextButton(onPressed: () => Navigator.pop(ctx), child: Text('Cancel', style: GoogleFonts.poppins(color: Colors.white54))),
+                ElevatedButton(onPressed: () { Navigator.pop(ctx); ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('BOM created'), backgroundColor: Colors.green)); }, style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0F3460)), child: Text('Create', style: GoogleFonts.poppins(color: Colors.white))),
+              ],
+            ),
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );

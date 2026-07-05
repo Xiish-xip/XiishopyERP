@@ -171,9 +171,47 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             children: [
                               Expanded(
                                 child: ElevatedButton.icon(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.edit),
-                                  label: Text('Edit Product',
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (ctx) => AlertDialog(
+                                        backgroundColor: const Color(0xFF16213E),
+                                        title: Text('Update Stock', style: GoogleFonts.poppins(color: Colors.white)),
+                                        content: TextField(
+                                          keyboardType: TextInputType.number,
+                                          decoration: InputDecoration(
+                                            hintText: 'Enter new stock quantity',
+                                            hintStyle: TextStyle(color: Colors.grey[600]),
+                                            filled: true,
+                                            fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                              borderSide: BorderSide.none,
+                                            ),
+                                          ),
+                                          style: const TextStyle(color: Colors.white),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(ctx),
+                                            child: Text('Cancel', style: GoogleFonts.poppins(color: Colors.white54)),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(ctx);
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('Stock updated'), backgroundColor: Colors.green),
+                                              );
+                                            },
+                                            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0F3460)),
+                                            child: Text('Update', style: GoogleFonts.poppins(color: Colors.white)),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.inventory),
+                                  label: Text('Update Stock',
                                       style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF0F3460),
@@ -184,7 +222,32 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: ElevatedButton.icon(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (ctx) => AlertDialog(
+                                        backgroundColor: const Color(0xFF16213E),
+                                        title: Text('Delete Product', style: GoogleFonts.poppins(color: Colors.white)),
+                                        content: Text('Are you sure you want to delete this product?', style: GoogleFonts.poppins(color: Colors.white70)),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(ctx),
+                                            child: Text('Cancel', style: GoogleFonts.poppins(color: Colors.white54)),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(ctx);
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('Product deleted'), backgroundColor: Colors.red),
+                                              );
+                                            },
+                                            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE94560)),
+                                            child: Text('Delete', style: GoogleFonts.poppins(color: Colors.white)),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                   icon: const Icon(Icons.delete),
                                   label: Text('Delete',
                                       style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),

@@ -29,8 +29,41 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
         title: Text('Project Tracking',
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
         actions: [
-          IconButton(icon: const Icon(Icons.add), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.calendar_month), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: const Color(0xFF16213E),
+                  title: Text('Create Project', style: GoogleFonts.poppins(color: Colors.white)),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(decoration: InputDecoration(labelText: 'Project Name', labelStyle: GoogleFonts.poppins(color: Colors.white54), filled: true, fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3), border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none)), style: GoogleFonts.poppins(color: Colors.white)),
+                      const SizedBox(height: 12),
+                      TextField(decoration: InputDecoration(labelText: 'Lead', labelStyle: GoogleFonts.poppins(color: Colors.white54), filled: true, fillColor: const Color(0xFF0F3460).withValues(alpha: 0.3), border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none)), style: GoogleFonts.poppins(color: Colors.white)),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(ctx), child: Text('Cancel', style: GoogleFonts.poppins(color: Colors.white54))),
+                    ElevatedButton(onPressed: () { Navigator.pop(ctx); ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Project created'), backgroundColor: Colors.green)); }, style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0F3460)), child: Text('Create', style: GoogleFonts.poppins(color: Colors.white))),
+                  ],
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.calendar_month),
+            onPressed: () {
+              showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2024),
+                lastDate: DateTime(2030),
+              );
+            },
+          ),
         ],
       ),
       body: Column(
