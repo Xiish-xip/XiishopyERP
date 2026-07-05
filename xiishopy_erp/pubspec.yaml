@@ -1,0 +1,94 @@
+name: xiishopy_erp
+description: Xiishopy ERP - Cross-Platform Enterprise Resource Planning for EAC Distributors & Retailers
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Localization
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+  # Firebase & Firestore (emulator-compatible)
+  firebase_core: ^3.12.0
+  firebase_auth: ^5.5.0
+  cloud_firestore: ^5.6.0
+  firebase_storage: ^12.4.0
+  firebase_messaging: ^15.0.0
+  firebase_analytics: ^11.0.0
+  firebase_crashlytics: ^4.0.0
+  firebase_remote_config: ^5.0.0
+
+  # State management
+  flutter_bloc: ^9.1.0
+  bloc: ^9.0.0
+  equatable: ^2.0.7
+  hydrated_bloc: ^10.0.0
+
+  # Routing
+  go_router: ^14.0.0
+
+  # Dependency Injection
+  get_it: ^8.0.0
+
+  # Networking
+  http: ^1.2.1
+  http_parser: ^4.0.2
+  dio: ^5.7.0
+
+  # Local Storage
+  flutter_secure_storage: ^9.2.2
+  shared_preferences: ^2.3.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # UI Components
+  flutter_screenutil: ^5.9.3
+  shimmer: ^3.0.0
+  fl_chart: ^0.69.2
+  google_fonts: ^6.2.1
+  cached_network_image: ^3.4.0
+  flutter_svg: ^2.0.0
+  # Functional programming
+  dartz: ^0.10.1
+
+  # Utilities
+  image_picker: ^1.1.2
+  uuid: ^4.5.1
+  connectivity_plus: ^6.1.0
+  device_info_plus: ^11.0.0
+  package_info_plus: ^8.0.0
+  url_launcher: ^6.3.0
+  share_plus: ^10.0.0
+  local_auth: ^2.3.0
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^6.0.0
+  path_provider: ^2.1.0
+  printing: ^5.12.0
+  pdf: ^3.10.0
+  excel: ^2.1.0
+
+  # Advanced Features
+  camera: ^0.11.0
+  geocoding: ^3.0.0
+  geolocator: ^12.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/translations/
+    - assets/images/

@@ -1,0 +1,275 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUser() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function hasRole(role) {
+      return isAuthenticated() && getUser().role == role;
+    }
+    
+    function hasAnyRole(roles) {
+      return isAuthenticated() && roles.hasAny([getUser().role]);
+    }
+    
+    function isAdmin() {
+      return hasAnyRole(['super_admin', 'admin']);
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isManagerOrAbove() {
+      return hasAnyRole(['super_admin', 'admin', 'supervisor', 'manager']);
+    }
+
+    // ── User Profiles ──
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── Products ──
+    match /products/{productId} {
+      allow read: if isAuthenticated();
+      allow create: if hasAnyRole(['super_admin', 'admin', 'data_entry']);
+      allow update: if hasAnyRole(['super_admin', 'admin', 'supervisor', 'data_entry']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Orders ──
+    match /orders/{orderId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isManagerOrAbove();
+      allow delete: if isAdmin();
+    }
+
+    // ── Payments ──
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated();
+      allow create, update: if hasAnyRole(['super_admin', 'admin', 'accountant', 'manager']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Customers ──
+    match /customers/{customerId} {
+      allow read: if isAuthenticated();
+      allow create, update: if hasAnyRole(['super_admin', 'admin', 'supervisor', 'data_entry']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Suppliers ──
+    match /suppliers/{supplierId} {
+      allow read: if isAuthenticated();
+      allow create, update: if hasAnyRole(['super_admin', 'admin', 'supervisor', 'data_entry']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Purchases ──
+    match /purchases/{purchaseId} {
+      allow read: if isAuthenticated();
+      allow create: if hasAnyRole(['super_admin', 'admin', 'manager', 'supervisor']);
+      allow update: if hasAnyRole(['super_admin', 'admin', 'manager']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Expenses ──
+    match /expenses/{expenseId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if hasAnyRole(['super_admin', 'admin', 'accountant', 'manager']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Assets ──
+    match /assets/{assetId} {
+      allow read: if isAuthenticated();
+      allow create, update: if hasAnyRole(['super_admin', 'admin', 'manager']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Projects ──
+    match /projects/{projectId} {
+      allow read: if isAuthenticated();
+      allow create, update: if hasAnyRole(['super_admin', 'admin', 'manager', 'supervisor']);
+      allow delete: if isAdmin();
+    }
+
+    // ── HR: Employees ──
+    match /employees/{employeeId} {
+      allow read: if hasAnyRole(['super_admin', 'admin', 'manager', 'supervisor']);
+      allow create, update: if hasAnyRole(['super_admin', 'admin']);
+      allow delete: if isAdmin();
+    }
+
+    // ── HR: Attendance ──
+    match /attendance/{attendanceId} {
+      allow read: if hasAnyRole(['super_admin', 'admin', 'manager', 'supervisor']);
+      allow create, update: if isManagerOrAbove();
+      allow delete: if isAdmin();
+    }
+
+    // ── HR: Leave Requests ──
+    match /leave_requests/{leaveId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.employeeId) || isManagerOrAbove());
+      allow create: if isAuthenticated();
+      allow update: if isManagerOrAbove();
+      allow delete: if isAdmin();
+    }
+
+    // ── HR: Payroll ──
+    match /payroll/{payrollId} {
+      allow read: if hasAnyRole(['super_admin', 'admin', 'accountant']);
+      allow create, update: if hasAnyRole(['super_admin', 'admin', 'accountant']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Logistics / Shipments ──
+    match /shipments/{shipmentId} {
+      allow read: if isAuthenticated();
+      allow create, update: if hasAnyRole(['super_admin', 'admin', 'manager', 'data_entry']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Admin: System Config ──
+    match /system_config/{docId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── Audit Logs (immutable) ──
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if false;
+    }
+
+    // ── Notifications ──
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow delete: if isAdmin();
+    }
+
+    // ── Inventory ──
+    match /inventory/{inventoryId} {
+      allow read: if isAuthenticated();
+      allow write: if hasAnyRole(['super_admin', 'admin', 'manager', 'data_entry']);
+    }
+
+    // ── Reports (generated) ──
+    match /reports/{reportId} {
+      allow read: if isAuthenticated();
+      allow create: if isManagerOrAbove();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── CRM: Leads ──
+    match /leads/{leadId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if hasAnyRole(['super_admin', 'admin', 'manager', 'data_entry']);
+      allow delete: if isAdmin();
+    }
+
+    // ── CRM: Opportunities ──
+    match /opportunities/{opportunityId} {
+      allow read: if isAuthenticated();
+      allow create: if hasAnyRole(['super_admin', 'admin', 'manager', 'data_entry']);
+      allow update: if hasAnyRole(['super_admin', 'admin', 'manager', 'data_entry']);
+      allow delete: if isAdmin();
+    }
+
+    // ── CRM: Campaigns ──
+    match /campaigns/{campaignId} {
+      allow read: if isAuthenticated();
+      allow write: if hasAnyRole(['super_admin', 'admin', 'manager']);
+    }
+
+    // ── Accounting: Chart of Accounts ──
+    match /chart_of_accounts/{accountId} {
+      allow read: if isAuthenticated();
+      allow create: if hasAnyRole(['super_admin', 'admin', 'accountant']);
+      allow update: if hasAnyRole(['super_admin', 'admin', 'accountant']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Accounting: Journal Entries ──
+    match /journal_entries/{entryId} {
+      allow read: if isAuthenticated();
+      allow create: if hasAnyRole(['super_admin', 'admin', 'accountant']);
+      allow update: if hasAnyRole(['super_admin', 'admin', 'accountant']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Accounting: General Ledger (immutable) ──
+    match /general_ledger/{ledgerId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if false;
+    }
+
+    // ── Tax: Config ──
+    match /tax_config/{configId} {
+      allow read: if isAuthenticated();
+      allow write: if hasAnyRole(['super_admin', 'admin', 'accountant']);
+    }
+
+    // ── Tax: Rates ──
+    match /tax_rates/{rateId} {
+      allow read: if isAuthenticated();
+      allow write: if hasAnyRole(['super_admin', 'admin', 'accountant']);
+    }
+
+    // ── Manufacturing: Bill of Materials ──
+    match /bom/{bomId} {
+      allow read: if isAuthenticated();
+      allow write: if hasAnyRole(['super_admin', 'admin', 'manager', 'data_entry']);
+    }
+
+    // ── Manufacturing: Work Orders ──
+    match /work_orders/{workOrderId} {
+      allow read: if isAuthenticated();
+      allow create: if hasAnyRole(['super_admin', 'admin', 'manager', 'supervisor']);
+      allow update: if hasAnyRole(['super_admin', 'admin', 'manager', 'supervisor']);
+      allow delete: if isAdmin();
+    }
+
+    // ── Manufacturing: Production Plans ──
+    match /production_plans/{planId} {
+      allow read: if isAuthenticated();
+      allow write: if hasAnyRole(['super_admin', 'admin', 'manager']);
+    }
+
+    // ── DMS: Documents ──
+    match /documents/{documentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (isOwner(resource.data.uploadedBy) || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // ── DMS: Document Templates ──
+    match /document_templates/{templateId} {
+      allow read: if isAuthenticated();
+      allow write: if hasAnyRole(['super_admin', 'admin', 'manager']);
+    }
+
+    // Default: Deny all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

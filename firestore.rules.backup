@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Development mode: any authenticated user can read any document
+    // Strict field-level rules will be enabled for production
+
+    // User profiles: read own, write own
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Orders: any authenticated user can read in dev
+    match /orders/{orderId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Via backend functions only
+    }
+
+    // Products: read by any authenticated user
+    match /products/{productId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Admin only - functions SDK bypasses rules
+    }
+
+    // Forex rates: read by any authenticated user
+    match /forex_rates/{rateId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Payments: any authenticated user can read in dev
+    match /payments/{paymentId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Shipments: any authenticated user can read in dev
+    match /shipments/{shipmentId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Translations cache
+    match /translations/{language} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

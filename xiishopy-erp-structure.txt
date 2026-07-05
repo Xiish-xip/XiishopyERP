@@ -1,0 +1,154 @@
+XIISHOPY ERP - ENTERPRISE DIRECTORY TREE
+=========================================
+
+/Users/abdirisaqahmed/Desktop/Marketo/Xiishopy ERP/
+├── firebase.json                     # Firebase emulator config & hosting rules
+├── .firebaserc                       # Firebase project aliases (demo-xiishopy)
+├── firestore.rules                   # Firestore security rules
+├── firestore.indexes.json            # Firestore composite indexes
+├── storage.rules                     # Cloud Storage security rules
+│
+├── functions/                        # TypeScript Cloud Functions (Express API)
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── .eslintrc.js
+│   └── src/
+│       ├── index.ts                  # Entry: Express app bootstrap & middleware
+│       ├── config/
+│       │   ├── firebase-admin.ts     # Admin SDK init (emulator mode)
+│       │   ├── cors.ts               # CORS configuration
+│       │   └── constants.ts          # App-wide constants & enums
+│       ├── middleware/
+│       │   ├── auth-guard.ts         # Firebase Auth verification middleware
+│       │   ├── request-validator.ts  # Zod / Joi schema validation
+│       │   ├── error-handler.ts      # Global error handler
+│       │   └── rate-limiter.ts       # Simple rate limiter
+│       ├── routes/
+│       │   ├── payments.ts           # /api/v1/payments - M-Pesa, Airtel, Selcom
+│       │   ├── logistics.ts          # /api/v1/logistics - Carrier tracking
+│       │   ├── forex.ts              # /api/v1/forex - Currency matrix
+│       │   ├── ai.ts                 # /api/v1/ai - AI endpoints
+│       │   ├── products.ts           # /api/v1/products - Product catalog
+│       │   ├── orders.ts             # /api/v1/orders - Order management
+│       │   └── users.ts              # /api/v1/users - User management
+│       └── services/
+│           ├── payment-engine.ts     # Payment webhook handler / simulator
+│           ├── logistics-engine.ts   # Live tracking status handler
+│           ├── forex-engine.ts       # Currency rate streaming
+│           ├── localization-engine.ts# Dynamic translation service
+│           ├── ai-inventory.ts       # Predictive inventory (lin. regression)
+│           └── ai-ocr.ts             # Smart Receipt OCR parser
+│
+├── local_cache/                      # Emulator data export/import directory
+│   └── .gitkeep
+│
+├── seed/                             # Seed data scripts
+│   ├── seed-firestore.ts             # Firestore seed data script
+│   └── seed-data.json                # Initial dataset (users, products, orders)
+│
+├── xiishopy_erp/                     # Flutter cross-platform client
+│   ├── pubspec.yaml
+│   ├── analysis_options.yaml
+│   ├── lib/
+│   │   ├── main.dart                 # App entry, Firebase init, adaptive config
+│   │   ├── app.dart                  # MaterialApp, theming, routing
+│   │   ├── core/
+│   │   │   ├── config/
+│   │   │   │   ├── app_config.dart   # Environment config (localhost/10.0.2.2)
+│   │   │   │   ├── theme.dart        # Theme definitions
+│   │   │   │   └── routes.dart       # Route definitions
+│   │   │   ├── network/
+│   │   │   │   ├── api_client.dart   # HTTP client config
+│   │   │   │   └── firebase_service.dart # Firebase init & emulator conn
+│   │   │   ├── localization/
+│   │   │   │   ├── app_localizations.dart   # i18n base
+│   │   │   │   └── localizations_delegate.dart
+│   │   │   └── utils/
+│   │   │       ├── currency_format.dart     # Live forex formatting
+│   │   │       └── snapshot_listener.dart   # .snapshots() wrapper
+│   │   ├── features/
+│   │   │   ├── auth/
+│   │   │   │   ├── data/
+│   │   │   │   │   ├── auth_repository.dart
+│   │   │   │   │   └── auth_provider.dart
+│   │   │   │   ├── presentation/
+│   │   │   │   │   ├── login_screen.dart
+│   │   │   │   │   └── widgets/
+│   │   │   │   │       ├── login_form.dart
+│   │   │   │   │       └── role_selector.dart
+│   │   │   │   └── bloc/
+│   │   │   │       └── auth_bloc.dart
+│   │   │   ├── inventory/
+│   │   │   │   ├── data/
+│   │   │   │   │   ├── product_repository.dart
+│   │   │   │   │   └── product_provider.dart
+│   │   │   │   ├── presentation/
+│   │   │   │   │   ├── inventory_screen.dart
+│   │   │   │   │   └── widgets/
+│   │   │   │   │       ├── product_card.dart
+│   │   │   │   │       ├── stock_indicator.dart
+│   │   │   │   │       └── ai_prediction_banner.dart
+│   │   │   │   └── bloc/
+│   │   │   │       └── inventory_bloc.dart
+│   │   │   ├── sales/
+│   │   │   │   ├── data/
+│   │   │   │   │   ├── order_repository.dart
+│   │   │   │   │   └── order_provider.dart
+│   │   │   │   ├── presentation/
+│   │   │   │   │   ├── sales_screen.dart
+│   │   │   │   │   ├── order_detail_screen.dart
+│   │   │   │   │   └── widgets/
+│   │   │   │   │       ├── order_card.dart
+│   │   │   │   │       ├── live_tracking_card.dart
+│   │   │   │   │       └── payment_status_badge.dart
+│   │   │   │   └── bloc/
+│   │   │   │       └── sales_bloc.dart
+│   │   │   ├── dashboard/
+│   │   │   │   ├── data/
+│   │   │   │   │   └── dashboard_repository.dart
+│   │   │   │   ├── presentation/
+│   │   │   │   │   ├── distributor_dashboard.dart  # Desktop dense view
+│   │   │   │   │   ├── retailer_dashboard.dart     # Mobile accessible view
+│   │   │   │   │   └── widgets/
+│   │   │   │   │       ├── revenue_chart.dart
+│   │   │   │   │       ├── forex_ticker.dart        # Live currency ticker
+│   │   │   │   │       ├── order_summary_card.dart
+│   │   │   │   │       └── recent_activity_list.dart
+│   │   │   │   └── bloc/
+│   │   │   │       └── dashboard_bloc.dart
+│   │   │   └── settings/
+│   │   │       ├── data/
+│   │   │       │   └── settings_repository.dart
+│   │   │       ├── presentation/
+│   │   │       │   ├── settings_screen.dart
+│   │   │       │   └── widgets/
+│   │   │       │       ├── language_selector.dart
+│   │   │       │       └── country_selector.dart
+│   │   │       └── bloc/
+│   │   │           └── settings_bloc.dart
+│   │   └── shared/
+│   │       └── widgets/
+│   │           ├── responsive_layout.dart            # Adaptive layout wrapper
+│   │           ├── loading_indicator.dart
+│   │           ├── error_snackbar.dart
+│   │           └── status_badge.dart
+│   ├── ios/
+│   │   ├── Runner/
+│   │   │   └── Info.plist
+│   │   └── Podfile
+│   ├── android/
+│   │   ├── app/
+│   │   │   └── build.gradle
+│   │   └── build.gradle
+│   └── test/
+│       ├── features/
+│       │   ├── auth/
+│       │   ├── inventory/
+│       │   └── sales/
+│       └── unit/
+│
+└── scripts/
+    ├── mock_xiishopy_traffic.py      # Multi-threaded live traffic simulator
+    ├── start-emulators.sh            # Orchestration: boot emulators
+    ├── stop-emulators.sh             # Clean shutdown
+    └── reset-emulator-data.sh        # Reset & re-seed emulator data
